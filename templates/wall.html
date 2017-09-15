@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .header h1, .header p {
+            display: inline-block;
+        }
+        .header h1 {
+            margin-left: 1.5%;
+        }
+        .header p {
+            margin-left: 40%;
+        }
+        .header a {
+            margin-left: 10%;
+        }
+        .header {
+            border-bottom: 1px solid black;
+        }
+        form {
+            width: 40%;
+            margin-left: 10px;
+        }
+        form input {
+            margin-top: 10px;
+        }
+        form.message-form {
+            width: 80%;
+            margin-top: 100px;
+        }
+        .message_entry {
+            margin-bottom: 50px;
+            margin-top: 20px;
+            margin-left: 2.5%;
+            background-color: #aacbff;
+            width: 50%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid black;
+        }
+        .comment_entry {
+            margin-left: 5%;
+            width: 40%;
+        }
+        .comment_entry p {
+            width: 100px;
+        }
+        .delete {
+            border: none;
+            background: none;
+            color: red;
+        }
+        h4, .delete {
+            display: inline;
+        }
+    </style>
+    <title>THE WALL</title>
+</head>
+<body>
+    <div class="header">
+        <h1>THE WALL</h1>
+        <p>Welcome {{ session['first_name'] }}</p>
+        <a href="/log_off">Log Off</a>
+    </div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% for item in all_messages %}
+        <div class="message_entry">
+            <h4>{{ item['first_name'] }} {{ item['last_name'] }} at {{ item['created_at'] }}</h4>
+            <p>{{ item['message'] }}</p>
+            {% if item['user_id'] == session['user_id'] %}
+                <form action="/delete_message" method='post'>
+                    <input type="hidden" name="message_delete" value= {{ item['id'] }}>
+                    <input type="submit" value="Delete" class="delete">
+                </form>
+            {% endif %}
+            {% for comment in item['comments'] %}
+                <div class="comment_entry">
+                    <h4>{{ comment['first_name'] }} {{ comment['last_name'] }} at {{ comment['created_at'] }}
+                        {% if comment['user_id'] == session['user_id'] %}
+                            <form action="/delete_comment" method='post'>
+                                <input type="hidden" name="comment_delete" value= {{ comment['id'] }}>
+                                <input type="submit" value="Delete" class="delete">
+                            </form>
+                        {% endif %}
+                    </h4>
+                    
+                    <p>{{ comment['comment'] }}</p>
+                </div>
+            {% endfor %}
+            <form action="add_comment" method="post">
+                <h4>Comment This Message</h4>
+                <input type="hidden" name="message_id" value={{ item['id'] }}>
+                <textarea name="comment"  rows="5" class="form-control"></textarea>
+                <input type="submit" value="Submit Comment" class="btn-primary">
+            </form>
+        </div>
+    {% endfor %}
+    <form action="add_message" method="post" class=".form-group message-form">
+        <h4>Post a message:</h4>
+        <textarea class="form-control" rows="5" name="message"></textarea>
+        <input type="submit" value="Submit Message" class="btn-primary">
+    </form>
+</body>
+</html>

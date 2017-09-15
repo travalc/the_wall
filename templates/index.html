@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Login And Registration</title>
+</head>
+<body>
+    <h3>Hello, welcome to THE WALL! Please Log In below or <a href="/registration">click here to register</a></h3>
+    <form action="log_in" method="POST">
+        <label for="email">email: </label>
+        <input type="text" name="email" class="form-control form-input">
+        <label for="password">Password: </label>
+        <input type="password" name="password" class="form-control form-input">
+        <input type="submit" value="Log In" class="btn-primary">
+    </form>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</body>
+</html>
